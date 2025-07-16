@@ -1,7 +1,8 @@
 import time
+import torch
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-
+import numpy as np
 
 # --- 상수 정의 ---
 PREDICTION_INTERVAL_SECONDS = 10  # 10초 - 테스트 / 2분 - 실제
@@ -18,12 +19,8 @@ def main():
         mock_prometheus_response = [
             {
                 'metric': {'function_name': 'printer'},
-                'values': [[1721113200 + i*60, 10 + i%10 + np.random.rand()] for i in range(50)]
+                'values': [[1721 + i*60, 10 + i%10 + np.random.rand()] for i in range(50)]
             },
-            {
-                'metric': {'function_name': 'payment-api'},
-                'values': [[1721113200 + i*60, 50 + (i%20)*2 + np.random.rand()*5] for i in range(50)]
-            }
         ]
 
         # 2. 데이터 전처리
@@ -33,9 +30,12 @@ def main():
             func_name = item['metric']['function_name']
 
             # Prometheus 데이터는 [타임스탬프, 값] 리스트로 제공
+            print("item['values']: ", item['values'])
+
+            # item['values']는 [[timestamp, value], ...] 형태의 리스트임
             df = pd.DataFrame(item['values'], columns=['time', 'rps'])
             df['time'] = pd.to_datetime(df['time'], unit='s')
-            df['rps'] = pd.to_numeric(df['rps'], errors='coerce') # 변환 불가 값은 NaN으로 처리
+            df['rps'] = pd.to_numeric(df['rps'], errors='coerce')  # 변환 불가 값은 NaN으로 처리
             df = df.set_index('time')
 
             all_func_data[func_name] = df
