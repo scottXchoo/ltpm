@@ -1,2 +1,1 @@
-# ltpm
-LTPM: Lightweight Transformer Serverless Workload Prediction Model
+# LTPM: Lightweight Transformer Serverless Workload Prediction Model
