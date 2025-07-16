@@ -1,0 +1,6 @@
+torch
+timm
+pandas
+scikit-learn
+numpy
+kubernetes # K8s API 호출에 필수

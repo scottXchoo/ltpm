@@ -1,0 +1,33 @@
+# rbac.yaml
+
+# 1. LTPM Pod를 위한 신분증 (ServiceAccount) 생성
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ltpm-sa
+---
+# 2. 필요한 권한 목록 (Role) 정의
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ltpm-role
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale"] # Deployment의 scale 서브 리소스에 대한
+    verbs: ["get", "patch", "update"] # 조회, 수정 권한을 부여
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list"]
+---
+# 3. 신분증(ServiceAccount)에 권한 목록(Role) 부여 (RoleBinding)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ltpm-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: ltpm-sa
+roleRef:
+  kind: Role
+  name: ltpm-role
+  apiGroup: rbac.authorization.k8s.io
