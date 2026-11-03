@@ -10,10 +10,14 @@ RETRAIN_INTERVAL_SECONDS = 6 * 3600 # 6시간
 LOOKBACK_WINDOW = 60 # ??
 
 def main():
-    print("This is LTPM")
+    print("This is LTPM!!!")
 
+    # Test용
+    # iteration_count = 0
     while True:
         print("--- 예측 시작 ---")
+        # print("반복 횟수: ", iteration_count)
+        # iteration_count += 1
         # 1. Prometheus에서 데이터 가져오기
         # Prometheus 쿼리 결과와 유사한 가상 데이터
         mock_prometheus_response = [
@@ -30,7 +34,7 @@ def main():
             func_name = item['metric']['function_name']
 
             # Prometheus 데이터는 [타임스탬프, 값] 리스트로 제공
-            print("item['values']: ", item['values'])
+            # print("item['values']: ", item['values'])
 
             # item['values']는 [[timestamp, value], ...] 형태의 리스트임
             df = pd.DataFrame(item['values'], columns=['time', 'rps'])
@@ -47,7 +51,7 @@ def main():
         for func_name, df in all_func_data.items():
             # --- 2단계: 리샘플링 및 결측치 처리 ---
             ## 1분(1T) 간격으로 데이터 재정렬, 빈 값은 0으로 채움
-            df_resampled = df.resample('1T').mean().fillna(0)
+            df_resampled = df.resample('1min').mean().fillna(0)
 
             # --- 3단계: 시간 특징(Feature) 생성 ---
             df_resampled['hour'] = df_resampled.index.hour
