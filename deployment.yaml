@@ -20,5 +20,13 @@ spec:
       serviceAccountName: ltpm-sa
       containers:
         - name: ltpm-controller
-          image: kyohyunchoo/ltpm:1.0
+          image: kyohyunchoo/ltpm:1.2
           imagePullPolicy: Always
+
+          # --- 이 부분을 추가합니다 ---
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "--- Container command started. Attempting to run Python script... ---"
+              python -u main.py
+              echo "--- Python script finished without crashing. ---"
