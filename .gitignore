@@ -1,0 +1,5 @@
+# macOS metadata
+.DS_Store
+
+# Code Runner temporary files
+tempCodeRunnerFile.py
